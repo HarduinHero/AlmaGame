@@ -1,2 +1,2 @@
 # AlmaGame
-Un jeu basé sur le logiciel Almacam
+Un jeu basé sur le logiciel Almacam réalisé en php.
