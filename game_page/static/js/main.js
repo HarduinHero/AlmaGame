@@ -22,6 +22,7 @@ $(document).ready(function(){
     const main_canvas = create_canvas('main_canvas', 720, 720);
     draw_grid(main_canvas, N)
     draw_polygon(main_canvas, N, 'poly1', 5, 5, [[0,0], [3,1], [1, 3]], get_piece_coloration())
+    
 
     // main_canvas.addEventListener('mousemove', function(event) {
     //     const c = get_canvas_data(event.target)

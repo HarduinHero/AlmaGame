@@ -1,5 +1,7 @@
 const SVGNS = "http://www.w3.org/2000/svg"
 
+
+
 function create_canvas(id, w, h) {
     let new_svg = document.createElementNS(SVGNS,'svg');
     new_svg.id = id;
@@ -90,4 +92,8 @@ function get_piece_coloration() {
         fill : PIECE_COLOR[Math.round(Math.random()*(PIECE_COLOR.length))],
         stroke : PIECE_OUTLINE_COLOR
     };
+}
+
+function get_neares_grid_point(canvas, n, x, y) {
+
 }
