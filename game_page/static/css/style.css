@@ -30,8 +30,8 @@ body {
 #main_play_area {
     background-color: white;
     border: 3px black ridge;
-    height: 100%;
-    min-width: 75%;
+    width: 720px;
+    height: 720px;
 }
 #secondary_play_area {    
     height: 100%;
