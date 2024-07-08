@@ -24,6 +24,7 @@ function draw_line(canvas, id, x1, y1, x2, y2, attrs) {
         new_line.setAttribute(key, value);
     }
     canvas.appendChild(new_line);
+    return new_line;
 }
 
 function draw_polygon(canvas, n, id, x, y, grid_points, attrs) {
@@ -40,8 +41,23 @@ function draw_polygon(canvas, n, id, x, y, grid_points, attrs) {
         new_polygon.setAttribute(key, value);
     }
     canvas.appendChild(new_polygon);
+    return new_polygon;
 }
 
+function draw_point(canvas, n, id, x, y, attrs) {
+    const c = get_canvas_data(canvas, n)
+    let new_point = document.createElementNS(SVGNS, 'circle');
+    new_point.id = id;
+    new_point.setAttribute('cx', `${x*c.grid.CELL_WIDTH}px`);
+    new_point.setAttribute('cy', `${y*c.grid.CELL_HEIGHT}px`);
+    new_point.setAttribute('r',  `2px`);
+    for (const key in attrs) {
+        const value = attrs[key];
+        new_point.setAttribute(key, value);
+    }
+    canvas.appendChild(new_point);
+    return new_point;
+}
 
 function draw_grid(canvas, n) {
     const c = get_canvas_data(canvas, n)
@@ -53,14 +69,12 @@ function draw_grid(canvas, n) {
 
 function get_canvas_data(canvas, n=null) {
     pos_data = canvas.getBoundingClientRect();
-    console.log(n);
     if (n!==null) {
         grid = {'CELL_HEIGHT' : pos_data.height/n,
                 'CELL_WIDTH'  : pos_data.width /n}
     } else {
         grid = null;
     }
-    console.log(grid);
     return {
         'grid'   : grid,
         'HEIGHT' : pos_data.height,
@@ -94,6 +108,27 @@ function get_piece_coloration() {
     };
 }
 
-function get_neares_grid_point(canvas, n, x, y) {
+function get_nearest_grid_point(canvas, n, x, y) {
+    const c = get_canvas_data(canvas, n);
+    let grid_max_X = null;
+    let grid_max_Y = null;
+    for(let i=0; i<=n; i++) {
+        if (x <= (i*c.grid.CELL_WIDTH)  && grid_max_X == null) { grid_max_X = i; }
+        if (y <= (i*c.grid.CELL_HEIGHT) && grid_max_Y == null) { grid_max_Y = i; }
+        if (grid_max_X != null && grid_max_Y != null) { break; }
+    }
+    cell = [
+        {p : {X : grid_max_X-1, Y : grid_max_Y-1}, d : dist([x, y], [(grid_max_X-1)*c.grid.CELL_WIDTH, (grid_max_Y-1)*c.grid.CELL_HEIGHT])},
+        {p : {X : grid_max_X-1, Y : grid_max_Y},   d : dist([x, y], [(grid_max_X-1)*c.grid.CELL_WIDTH,  grid_max_Y*c.grid.CELL_HEIGHT])},
+        {p : {X : grid_max_X,   Y : grid_max_Y-1}, d : dist([x, y], [grid_max_X*c.grid.CELL_WIDTH,     (grid_max_Y-1)*c.grid.CELL_HEIGHT])},
+        {p : {X : grid_max_X,   Y : grid_max_Y},   d : dist([x, y], [grid_max_X*c.grid.CELL_WIDTH,      grid_max_Y*c.grid.CELL_HEIGHT])},
+    ];
+    nearest_point = cell.reduce(function (prev, curr) {
+        return prev.d < curr.d ? prev : curr
+    })
+    return nearest_point.p
+}
 
+function dist(p1, p2) {
+    return Math.sqrt(Math.pow(p1[0]-p2[0], 2) + Math.pow(p1[1]-p2[1], 2))
 }
