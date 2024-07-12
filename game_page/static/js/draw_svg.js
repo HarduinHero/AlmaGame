@@ -1,7 +1,5 @@
 const SVGNS = "http://www.w3.org/2000/svg"
 
-
-
 function create_canvas(id, w, h) {
     let new_svg = document.createElementNS(SVGNS,'svg');
     new_svg.id = id;
@@ -43,6 +41,27 @@ function draw_polygon(canvas, n, id, x, y, grid_points, attrs) {
     canvas.appendChild(new_polygon);
     return new_polygon;
 }
+
+function draw_grid_clip_polygon_from_barrycentre(canvas, n, id, x, y, grid_points, attrs) {
+    
+    const c = get_canvas_data(canvas, n)
+    const shape_barry_local  = barycentre(grid_points);
+    console.log(c);
+    
+    const origin_global_R    = [x-(shape_barry_local[0]*c.grid.CELL_WIDTH), y-(shape_barry_local[1]*c.grid.CELL_WIDTH)];
+    const origin_global_N    = get_nearest_grid_point(canvas, n, origin_global_R[0], origin_global_R[1]);
+    draw_polygon(canvas, n, id, origin_global_N.X, origin_global_N.Y, grid_points, attrs);
+    
+    console.log(x, y)
+    console.log(shape_barry_local)
+    console.log(c.grid.CELL_WIDTH*shape_barry_local.X);
+    console.log(origin_global_R)
+    console.log(origin_global_N);
+
+
+    draw_point(canvas, n, 'pbary', Math.round(origin_global_R[0]), Math.round(shape_barry_local[1]));
+}
+
 
 function draw_point(canvas, n, id, x, y, attrs) {
     const c = get_canvas_data(canvas, n)
@@ -131,4 +150,14 @@ function get_nearest_grid_point(canvas, n, x, y) {
 
 function dist(p1, p2) {
     return Math.sqrt(Math.pow(p1[0]-p2[0], 2) + Math.pow(p1[1]-p2[1], 2))
+}
+
+function barycentre(points) {
+    let sum_x = 0;
+    let sum_y = 0;
+    points.forEach(function(p) {
+        sum_x += p[0];
+        sum_y += p[1];
+    });
+    return [sum_x/points.length, sum_y/points.length]
 }

@@ -27,4 +27,7 @@ $(document).ready(function(){
     main_canvas.addEventListener("contextmenu", function(event) {
         event.preventDefault();
     });
+
+
+
 });

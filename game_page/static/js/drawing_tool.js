@@ -1,10 +1,16 @@
 function setup_drawing_tool(canvas, N) {
+
+    console.log("Drawing Tool\nd : to remove the last point\nz : to remove everything\np : to print the points list");
+
     var pointer_folower = null
     var drawings = []
     var recorded_points = []
 
+    const folowerstyle = get_piece_coloration();
+
     canvas.addEventListener('mousemove', function(event) {
         //console.log(event);
+
         const c = get_canvas_data(canvas);
         const mouse = {X : event.clientX - c.X, Y : event.clientY - c.Y};
         const grid_pos = get_nearest_grid_point(canvas, N, mouse.X, mouse.Y);
@@ -12,7 +18,8 @@ function setup_drawing_tool(canvas, N) {
         if (pointer_folower != null) {
             pointer_folower.remove();
         }
-        pointer_folower = draw_point(canvas, N, 'p', grid_pos.X, grid_pos.Y, {fill : '#ff0000', r : '4'});
+        // pointer_folower = draw_point(canvas, N, 'p', grid_pos.X, grid_pos.Y, {fill : '#ff0000', r : '4'});
+        pointer_folower = draw_grid_clip_polygon_from_barrycentre(canvas, N, 'folower', mouse.X, mouse.Y, POLYS[1], folowerstyle);
     });
 
     canvas.addEventListener('mousedown', function(event) {
@@ -42,6 +49,12 @@ function setup_drawing_tool(canvas, N) {
                 out += `[${p[0]},${p[1]}], `;
             });
             console.log(`[${out.substring(0, out.length-2)}]`);
+        }
+        if (event.key == 'z') {
+            drawings.forEach(function (element) {
+                element.remove();
+            });
+            recorded_points = []
         }
 
 
